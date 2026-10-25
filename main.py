@@ -16,23 +16,31 @@ parser.add_argument(
     choices=["scan", "cpu", "memory", "disk", "uptime"],
     help="Select which system information to display"
 )
+
+def run_diagnostics(name, function):
+    try:
+        function()
+    except(OSError, ValueError, IndexError) as e:
+        print(f"[ERROR] {name}: {e}")
+
+
 def main():
     args = parser.parse_args()
     print("ArchPulse - System Health")
     print("-------------------------")
     if args.command == "scan":
-        print_cpu_usage()
-        print_meminfo()
-        print_disk_usage()
-        print_uptime()
+        run_diagnostics("CPU Usage", print_cpu_usage)
+        run_diagnostics("Memory Info", print_meminfo)
+        run_diagnostics("Disk Usage", print_disk_usage)
+        run_diagnostics("Uptime", print_uptime)
     elif args.command == "cpu":
-        print_cpu_usage()
+        run_diagnostics("CPU Usage", print_cpu_usage)
     elif args.command == "memory":
-        print_meminfo()
+        run_diagnostics("Memory Info", print_meminfo)
     elif args.command == "disk":
-        print_disk_usage()
+        run_diagnostics("Disk Usage", print_disk_usage)
     elif args.command == "uptime":
-        print_uptime()
+        run_diagnostics("Uptime", print_uptime)
 
 
 if __name__== "__main__":
