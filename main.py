@@ -1,3 +1,5 @@
+import sys
+
 from src.memory import print_meminfo
 from src.cpu import print_cpu_usage
 from src.disk import print_disk_usage
@@ -21,7 +23,7 @@ def run_diagnostics(name, function):
     try:
         function()
     except(OSError, ValueError, IndexError) as e:
-        print(f"[ERROR] {name}: {e}")
+        print(f"[ERROR] {name}: {e}", file=sys.stderr)
 
 
 def main():
