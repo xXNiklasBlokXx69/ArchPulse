@@ -16,3 +16,6 @@ htmlcov/
 
 # IDE files
 .idea/
+
+#Generated files
+system.json

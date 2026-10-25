@@ -4,6 +4,7 @@ from src.memory import print_meminfo
 from src.cpu import print_cpu_usage
 from src.disk import print_disk_usage
 from src.uptime import print_uptime
+from src.report import collect_system_info, save_report
 
 import argparse
 
@@ -15,8 +16,14 @@ parser.add_argument(
     "command",
     nargs="?",
     default="scan",
-    choices=["scan", "cpu", "memory", "disk", "uptime"],
+    choices=["scan", "cpu", "memory", "disk", "uptime", "report"],
     help="Select which system information to display"
+)
+
+parser.add_argument(
+    "--output",
+    default="system.json",
+    help="Output filename for JSON reports"
 )
 
 def run_diagnostics(name, function):
@@ -43,6 +50,10 @@ def main():
         run_diagnostics("Disk Usage", print_disk_usage)
     elif args.command == "uptime":
         run_diagnostics("Uptime", print_uptime)
+    elif args.command == "report":
+        data = collect_system_info()
+        save_report(data, args.output)
+        print(f"Report saved to {args.output}")
 
 
 if __name__== "__main__":

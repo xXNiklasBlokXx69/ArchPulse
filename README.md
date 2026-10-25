@@ -99,7 +99,7 @@ Run the complete test suite:
 python -m unittest discover -s tests -v
 ```
 
-The initial monitoring components have 19 automated tests covering CPU, memory, disk, and uptime functionality.
+The initial monitoring components have 32 automated tests covering CPU, memory, disk, and uptime functionality, while also testing the whole cli coverage.
 
 ## Project Structure
 
