@@ -29,32 +29,48 @@ parser.add_argument(
 def run_diagnostics(name, function):
     try:
         function()
+        return True
     except(OSError, ValueError, IndexError) as e:
         print(f"[ERROR] {name}: {e}", file=sys.stderr)
+        return False
 
+def try_save(args):
+    try:
+        data = collect_system_info()
+        save_report(data, args.output)
+        print(f"Report saved to {args.output}")
+        return True
+    except (OSError, ValueError, IndexError, TypeError) as e:
+        print(f"[ERROR] Report: {e}", file=sys.stderr)
+        return False
 
 def main():
     args = parser.parse_args()
     print("ArchPulse - System Health")
     print("-------------------------")
     if args.command == "scan":
-        run_diagnostics("CPU Usage", print_cpu_usage)
-        run_diagnostics("Memory Info", print_meminfo)
-        run_diagnostics("Disk Usage", print_disk_usage)
-        run_diagnostics("Uptime", print_uptime)
+        results = []
+        results.append(run_diagnostics("CPU Usage", print_cpu_usage))
+        results.append(run_diagnostics("Memory Info", print_meminfo))
+        results.append(run_diagnostics("Disk Usage", print_disk_usage))
+        results.append(run_diagnostics("Uptime", print_uptime))
+        return 0 if all(results) else 1
     elif args.command == "cpu":
-        run_diagnostics("CPU Usage", print_cpu_usage)
+        success = run_diagnostics("CPU Usage", print_cpu_usage)
+        return 0 if success else 1
     elif args.command == "memory":
-        run_diagnostics("Memory Info", print_meminfo)
+        success = run_diagnostics("Memory Info", print_meminfo)
+        return 0 if success else 1
     elif args.command == "disk":
-        run_diagnostics("Disk Usage", print_disk_usage)
+        success = run_diagnostics("Disk Usage", print_disk_usage)
+        return 0 if success else 1
     elif args.command == "uptime":
-        run_diagnostics("Uptime", print_uptime)
+        success = run_diagnostics("Uptime", print_uptime)
+        return 0 if success else 1
     elif args.command == "report":
-        data = collect_system_info()
-        save_report(data, args.output)
-        print(f"Report saved to {args.output}")
+        success = try_save(args)
+        return 0 if success else 1
 
 
 if __name__== "__main__":
-    main()
+    sys.exit(main())
